@@ -11,6 +11,7 @@ class EvaluationResult(BaseModel):
     score: float = Field(ge=0.0, le=1.0)
     passed: bool
     explanation: str
+    applicable: bool = True
 
 class TraceStep(BaseModel):
     index: int
