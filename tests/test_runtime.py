@@ -13,7 +13,12 @@ def test_protected_tool_requires_approval():
     registry.register(Tool("send_email", lambda recipient: recipient, requires_approval=True))
     with pytest.raises(ApprovalRequired):
         registry.execute("send_email", {"recipient": "person@example.com"})
-    assert registry.execute("send_email", {"recipient": "person@example.com"}, approved=True) == "person@example.com"
+    result = registry.execute(
+        "send_email",
+        {"recipient": "person@example.com"},
+        approved=True,
+    )
+    assert result == "person@example.com"
 
 def test_duplicate_tools_are_rejected():
     registry = ToolRegistry()
