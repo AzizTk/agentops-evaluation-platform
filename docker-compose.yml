@@ -1,0 +1,11 @@
+services:
+  agentops:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      AGENTOPS_DATABASE_URL: sqlite:////data/agentops.db
+    volumes:
+      - agentops_data:/data
+volumes:
+  agentops_data:
