@@ -41,7 +41,10 @@ class RunRecord(BaseModel):
 class DemoRunRequest(BaseModel):
     question: str = Field(min_length=1, max_length=2000)
     expected_answer: str | None = None
-    context: str = "Our standard refund policy allows customers to request a refund within 30 days of purchase."
+    context: str = (
+        "Our standard refund policy allows customers to request a refund "
+        "within 30 days of purchase."
+    )
     required_evidence: list[str] = Field(default_factory=lambda: ["30 days"])
     input_tokens: int = Field(default=250, ge=0)
     output_tokens: int = Field(default=60, ge=0)
