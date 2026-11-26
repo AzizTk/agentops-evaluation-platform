@@ -40,11 +40,27 @@ def metrics_summary():
     runs = list_runs(200)
     evaluations = [e for run in runs for e in run.evaluations]
     total, count = len(runs), len(evaluations)
+    average_score = (
+        round(sum(e.score for e in evaluations) / count, 3)
+        if count
+        else None
+    )
+    pass_rate = (
+        round(sum(e.passed for e in evaluations) / count, 3)
+        if count
+        else None
+    )
     return {
         "total_runs": total,
         "completed_runs": sum(r.status == "completed" for r in runs),
-        "average_duration_ms": round(sum(r.duration_ms for r in runs) / total, 3) if total else 0,
-        "average_evaluation_score": round(sum(e.score for e in evaluations) / count, 3) if count else None,
-        "evaluation_pass_rate": round(sum(e.passed for e in evaluations) / count, 3) if count else None,
-        "estimated_cost_total": round(sum(r.estimated_cost for r in runs), 8),
+        "average_duration_ms": (
+            round(sum(r.duration_ms for r in runs) / total, 3)
+            if total
+            else 0
+        ),
+        "average_evaluation_score": average_score,
+        "evaluation_pass_rate": pass_rate,
+        "estimated_cost_total": round(
+            sum(r.estimated_cost for r in runs), 8
+        ),
     }
