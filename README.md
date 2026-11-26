@@ -85,6 +85,17 @@ Scores are transparent regression signals, not claims of universal semantic unde
 | GET | `/runs/{run_id}` | Retrieve trace and evaluations |
 | GET | `/metrics/summary` | Aggregate reliability and runtime metrics |
 
+### Optional dashboard
+
+Install the dashboard extra and start the UI in a second terminal:
+
+```bash
+pip install -e ".[dashboard]"
+streamlit run dashboard/app.py
+```
+
+The dashboard reads from the API at `http://127.0.0.1:8000`. Override this with `AGENTOPS_API_URL` if the API runs elsewhere.
+
 ## Human approval
 Tools may be registered with `requires_approval=True`. The runtime blocks execution until approval is passed explicitly. This is a policy primitive; production use should add authenticated approval endpoints, identity, authorization, and durable audit controls.
 
