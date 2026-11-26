@@ -40,13 +40,26 @@ class DemoAgent:
 
     def run(self, request: DemoRunRequest) -> tuple[str, list[TraceStep]]:
         t0 = perf_counter()
-        retrieval = TraceStep(index=0, kind="retrieval", name="lookup_policy",
-                              input={"query": request.question}, output={"context": request.context})
-        answer = ("The refund window is 30 days." if "30 days" in request.context
-                  else "The context does not specify a refund window.")
-        generation = TraceStep(index=1, kind="generation", name="compose_answer",
-                               input={"context_length": len(request.context)}, output=answer,
-                               duration_ms=(perf_counter() - t0) * 1000)
+        retrieval = TraceStep(
+            index=0,
+            kind="retrieval",
+            name="lookup_policy",
+            input={"query": request.question},
+            output={"context": request.context},
+        )
+        answer = (
+            "The refund window is 30 days."
+            if "30 days" in request.context
+            else "The context does not specify a refund window."
+        )
+        generation = TraceStep(
+            index=1,
+            kind="generation",
+            name="compose_answer",
+            input={"context_length": len(request.context)},
+            output=answer,
+            duration_ms=(perf_counter() - t0) * 1000,
+        )
         return answer, [retrieval, generation]
 
 def execute_demo(request: DemoRunRequest) -> RunRecord:
@@ -58,9 +71,28 @@ def execute_demo(request: DemoRunRequest) -> RunRecord:
     evaluations = []
     if request.expected_answer is not None:
         evaluations.append(exact_match(answer, request.expected_answer))
-    evaluations.extend([grounding(answer, request.context, request.required_evidence), task_completion(True)])
-    cost = request.input_tokens / 1000 * settings.input_cost_per_1k + request.output_tokens / 1000 * settings.output_cost_per_1k
-    return RunRecord(id=str(uuid4()), agent_name=DemoAgent.name, question=request.question,
-        final_output=answer, status="completed", started_at=started, completed_at=completed,
-        duration_ms=duration, steps=steps, evaluations=evaluations,
-        input_tokens=request.input_tokens, output_tokens=request.output_tokens, estimated_cost=cost)
+    evaluations.extend(
+        [
+            grounding(answer, request.context, request.required_evidence),
+            task_completion(True),
+        ]
+    )
+    cost = (
+        request.input_tokens / 1000 * settings.input_cost_per_1k
+        + request.output_tokens / 1000 * settings.output_cost_per_1k
+    )
+    return RunRecord(
+        id=str(uuid4()),
+        agent_name=DemoAgent.name,
+        question=request.question,
+        final_output=answer,
+        status="completed",
+        started_at=started,
+        completed_at=completed,
+        duration_ms=duration,
+        steps=steps,
+        evaluations=evaluations,
+        input_tokens=request.input_tokens,
+        output_tokens=request.output_tokens,
+        estimated_cost=cost,
+    )
