@@ -33,9 +33,19 @@ def init_db(target_engine=None):
 
 def save_run(run: RunRecord, target_session_factory=SessionLocal):
     with target_session_factory() as session:
-        session.merge(RunRow(id=run.id, agent_name=run.agent_name, question=run.question,
-            final_output=str(run.final_output), status=run.status, started_at=run.started_at,
-            completed_at=run.completed_at, duration_ms=run.duration_ms, payload=run.model_dump_json()))
+        session.merge(
+            RunRow(
+                id=run.id,
+                agent_name=run.agent_name,
+                question=run.question,
+                final_output=str(run.final_output),
+                status=run.status,
+                started_at=run.started_at,
+                completed_at=run.completed_at,
+                duration_ms=run.duration_ms,
+                payload=run.model_dump_json(),
+            )
+        )
         session.commit()
 
 def get_run(run_id: str, target_session_factory=SessionLocal):
@@ -45,5 +55,7 @@ def get_run(run_id: str, target_session_factory=SessionLocal):
 
 def list_runs(limit: int = 50, target_session_factory=SessionLocal):
     with target_session_factory() as session:
-        rows = session.scalars(select(RunRow).order_by(RunRow.started_at.desc()).limit(limit)).all()
+        rows = session.scalars(
+            select(RunRow).order_by(RunRow.started_at.desc()).limit(limit)
+        ).all()
         return [RunRecord.model_validate_json(row.payload) for row in rows]
