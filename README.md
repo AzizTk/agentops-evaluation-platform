@@ -16,7 +16,7 @@ Agent workflows are multi-step systems. A fluent final response can still use th
 
 ## Features
 - Traceable runs: steps, tool calls, timestamps, errors, and final outputs.
-- Deterministic evaluators: exact match, required keys, evidence grounding, task completion.
+- Deterministic evaluators: exact match, required keys, lexical evidence grounding (negation- and unsupported-number-aware), task completion.
 - Operational metrics: duration, step count, token counts, tool calls, estimated cost.
 - Human approval primitive for tools marked as sensitive.
 - Persistent history: SQLite by default; PostgreSQL-compatible SQLAlchemy URL.
@@ -70,7 +70,7 @@ Inspect history with `GET /runs`, one trace with `GET /runs/{run_id}`, and aggre
 |---|---|
 | Exact match | Normalized answer equals expected answer |
 | Required keys | Structured output contains required fields |
-| Grounding | Required evidence phrases exist in context and answer |
+| Lexical grounding | Required phrases are in the context and asserted (not negated) in the answer; numbers not in the context fail. Lexical baseline only; empty evidence is reported as not applicable |
 | Task completion | Agent explicitly reports successful completion |
 
 Scores are transparent regression signals, not claims of universal semantic understanding.

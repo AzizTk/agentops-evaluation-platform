@@ -38,7 +38,7 @@ def get_run_detail(run_id: str):
 @app.get("/metrics/summary")
 def metrics_summary():
     runs = list_runs(200)
-    evaluations = [e for run in runs for e in run.evaluations]
+    evaluations = [e for run in runs for e in run.evaluations if e.applicable]
     total, count = len(runs), len(evaluations)
     average_score = (
         round(sum(e.score for e in evaluations) / count, 3)

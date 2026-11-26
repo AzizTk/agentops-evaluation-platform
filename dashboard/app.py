@@ -39,8 +39,8 @@ else:
         "Status": run["status"],
         "Duration (ms)": round(run["duration_ms"], 2),
         "Cost estimate": run["estimated_cost"],
-        "Evaluations passed": sum(item["passed"] for item in run["evaluations"]),
-        "Evaluations total": len(run["evaluations"]),
+        "Evaluations passed": sum(i["passed"] for i in run["evaluations"] if i.get("applicable", True)),
+        "Evaluations total": sum(1 for i in run["evaluations"] if i.get("applicable", True)),
     } for run in runs]
     st.dataframe(rows, use_container_width=True, hide_index=True)
 
